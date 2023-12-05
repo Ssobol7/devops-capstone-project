@@ -22,7 +22,6 @@ spec:
           workspace: pipeline-workspace          
       taskRef:
         name: cleanup
-
     - name: clone
       workspaces:
         - name: output
@@ -36,3 +35,17 @@ spec:
         value: $(params.branch)
       runAfter:
         - init
+    - name: lint
+      workspaces:
+        - name: source
+          workspace: pipeline-workspace
+      taskRef:
+        name: flake8
+      params:
+      - name: image
+        value: "python:3.9-slim"
+      - name: args
+        value: ["--count","--max-complexity=10","--max-line-length=127","--statistics"]
+      runAfter:
+        - clone
+        
